@@ -13,6 +13,7 @@ import NoPhotoWhite from '../../images/NoPhotoWhite.png'
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
 import { transparent } from 'material-ui/styles/colors';
+import {addUserToChat} from '../actions/index'
  
 let SelectableList = makeSelectable(List);
 
@@ -32,12 +33,28 @@ function wrapState(ComposedComponent) {
     }
 
     handleRequestChange(event,index) {
+      var eles = document.getElementsByClassName("ChatClass")
+      Array.prototype.forEach.call(eles, function(el){
+        console.log(el.classList)
+        el.classList.remove("ChatClass");
+        el.classList.add("ChatClass-Active");
+        console.log(el.classList)
+      
+      })
       this.setState({
         selectedIndex: index,
       });
+      console.log("importante")
+      console.log(this.props) // usuario a chatear
+      if(this.props.loggedUser)
+        this.props.loggedUser.chatWith = this.state.selectedIndex
+
     };
 
     render() {
+      console.log(this.state.selectedIndex) // usuario a chatear
+      if(document.getElementById("ChatWithId") != undefined)
+        document.getElementById("ChatWithId").innerText = this.state.selectedIndex
       return (
         <ComposedComponent
           value={this.state.selectedIndex}
@@ -91,7 +108,7 @@ function ConnectedUsers(user){
        user.onlineStatus &&
         <ListItem 
         key={user.id}
-        value={user.id}
+        value={user.name}
         primaryText={user.name}
         leftAvatar={<Avatar style={{backgroundColor:transparent}} src={user.image ? user.image : NoPhoto} />}
         rightIcon={<CommunicationChatBubble />}
@@ -109,7 +126,8 @@ function DisconnectedUsers(user){
       />
   )
 }
- 
-const ConnectedUsersList = connect(mapStateToProps)(UsersList)
 
-export default ConnectedUsersList;
+
+const ConnectedUsersList = connect(mapStateToProps)(SelectableList)
+
+export default UsersList;

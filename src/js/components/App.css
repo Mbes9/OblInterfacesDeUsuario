@@ -17,5 +17,18 @@ body{
     #UsersCard{
         width: 100% !important
     }
+    .ChatClass{
+        margin-left: -200% !important;
+        max-width: 320px !important;
+        width: 100% !important;
+        position: absolute;
+        
+    }
+    .ChatClass-Active{
+        margin-left: auto !important;
+        max-width: 320px !important;
+        width: 100% !important;
+        position: absolute;
+        
+    }
 }
-
