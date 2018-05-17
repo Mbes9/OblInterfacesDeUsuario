@@ -54,7 +54,23 @@ const UsersList = ({users}) => (
       <AppBar title="Mi chat" id="leftNav"   />
     <SelectableList defaultValue={1}>
       <Subheader>Usuarios</Subheader>
-      {users.map(user => (
+      {users.map(user => (ConnectedUsers(user)
+      ))}
+    </SelectableList>
+    <Divider />
+    <List>
+      <Subheader>Desconectados</Subheader>
+      {users.map(user => (DisconnectedUsers(user)
+      ))}
+    </List>
+    </CardMedia>
+  </Card>
+);
+
+function ConnectedUsers(user){
+  return(
+    <div>
+      { user.onlineStatus &&
         <ListItem 
         key={user.id}
         value={user.id}
@@ -62,22 +78,23 @@ const UsersList = ({users}) => (
         leftAvatar={<Avatar src={user.image ? user.image : NoPhoto} />}
         rightIcon={<CommunicationChatBubble />}
       />
-      ))}
-    </SelectableList>
-    <Divider />
-    <List>
-      <Subheader>Desconectados</Subheader>
-      <ListItem
-        primaryText="Usuario 6"
-        leftAvatar={<Avatar src={NoPhoto} />}
+      }
+    </div>
+  )
+}
+
+function DisconnectedUsers(user){
+  return(
+    <div>
+      { !user.onlineStatus &&
+        <ListItem 
+        key={user.id}
+        primaryText={user.name}
+        leftAvatar={<Avatar src={user.image ? user.image : NoPhoto} />}
       />
-      <ListItem
-        primaryText="Usuario 7"
-        leftAvatar={<Avatar src={NoPhoto} />}
-      />
-    </List>
-    </CardMedia>
-  </Card>
-);
+      }
+    </div>
+  )
+}
  
 export default UsersList;
