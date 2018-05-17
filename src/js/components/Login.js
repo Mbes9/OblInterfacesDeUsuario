@@ -17,7 +17,12 @@ constructor(props){
 
 handleClick(event){
  
-  this._createUser(this.state.username, this.state.image)
+  this._createUser(this.state.username, this.state.image).catch((res) => {
+    const errors = res.graphQLErrors.map((error) => {
+      console.log(error.code);
+      console.log(error.message);
+    });
+  });
 
  }
 
@@ -26,6 +31,7 @@ handleClick(event){
     variables: { name, image }
   });
   console.log(result)
+  console.log("id: " + result.data.createUser.id)
 };
 
 render() {
@@ -63,10 +69,11 @@ const style = {
 
 const CREATE_USER_MUTATION = gql`
   mutation CreateUserMutation($name: String!, $image: String) {
-    createUser(name: $name, image: $image) {
+    createUser(name: $name, image: $image, onlineStatus: true) {
       id
       name
       image
+      onlineStatus
     }
   }
 `;
