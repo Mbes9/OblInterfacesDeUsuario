@@ -1,0 +1,21 @@
+
+body{
+    height: 100% !important;
+    line-height: 2;
+}
+/* 
+@media(max-width: 790px){
+    #ChatCard{
+        display: none !important
+    }
+    #MessageCard{
+        display: none !important
+    }
+}
+*/
+@media(max-width: 780px){
+    #UsersCard{
+        width: 100% !important
+    }
+}
+
