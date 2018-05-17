@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import { Switch, Route } from 'react-router-dom'
+import { Switch, Route, Redirect} from 'react-router-dom'
 import { PropsRoute  } from 'react-router-with-props'
 import './App.css';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
@@ -58,6 +58,7 @@ class App extends React.Component{
             <Switch>
               <PropsRoute path='/login' component={Login}/>
               <PropsRoute path='/mainPage' component={MainPage} users={allUsers}/>
+              <Redirect from="/" to="/login" />
             </Switch>
          </CardMedia>
        </Card>

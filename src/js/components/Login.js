@@ -28,7 +28,7 @@ constructor(props){
  handleClick(event){
   
   const allUsers = this.props.allUsersQuery.allUsers || [];
-  var user = this.findArrayElementByName(allUsers, "Raul");
+  var user = this.findArrayElementByName(allUsers, this.state.username);
   if(user !== undefined){
     //Existe usuario
     if(user.onlineStatus){
