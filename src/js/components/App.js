@@ -51,7 +51,7 @@ class App extends React.Component{
     
     return(
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
-      <Card style={{height:'90vh', width:'80vw', marginLeft:'10%', marginRight:'10%', marginTop:'2%'}}>
+      <Card style={{display:'table',height:'90vh', width:'80vw', marginLeft:'10%', marginRight:'10%', marginTop:'2%'}}>
          <CardMedia>
           <UsersList users={allUsers}/>
           <Chat/>

@@ -35,12 +35,12 @@ class ConnectedChat extends React.Component {
   render(){
      return(
             <MediaQuery query="(min-width: 780px)">
-            <Card id="ChatCard" style={{height:'85vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right'}}>
+            <Card id="ChatCard" style={{height:'82vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right'}}>
               <CardMedia>
         <AppBar title="Nombre del usuario..." iconElementRight={<span style={writingSpan}>Escribiendo...</span>}  id="rightNav" iconElementLeft={<div><MediaQuery query="(max-width:780px)"> <IconButton><NavigationClose /></IconButton></MediaQuery>
             <MediaQuery query="(min-width:780px)"><IconButton><MoreVertIcon /></IconButton></MediaQuery> </div>
             } />
-             <List>
+             <List style={{maxHeight: 'calc(82vh - 64px)',overflowX:'hidden'}}>
                 <Subheader>Hoy</Subheader>
                 <ListItem
                   leftAvatar={<Avatar src={UserFace} />}
@@ -94,7 +94,7 @@ class ConnectedChat extends React.Component {
 
               </CardMedia>
             </Card>
-            <Card id="MessageCard" style={{height:'5vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right', paddingLeft:'3vw'}}>
+            <Card id="MessageCard" style={{height:'8vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right', paddingLeft:'3vw'}}>
                   <CardMedia>
                     <TextField 
                       hintText="Escribe un mensaje aquí"

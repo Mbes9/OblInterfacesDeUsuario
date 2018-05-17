@@ -49,20 +49,22 @@ function wrapState(ComposedComponent) {
 SelectableList = wrapState(SelectableList);
 
 const UsersList = ({users}) => (
-    <Card id="UsersCard" style={{height:'90vh', width:'320px', minWidth:'320px !important', float:'left'}}>
+    <Card id="UsersCard" style={{ width:'320px', minWidth:'320px !important', float:'left'}}>
     <CardMedia>
-      <AppBar title="Mi chat" id="leftNav"   />
-    <SelectableList defaultValue={1}>
-      <Subheader>Usuarios</Subheader>
-      {users.map(user => (ConnectedUsers(user)
-      ))}
-    </SelectableList>
-    <Divider />
-    <List>
-      <Subheader>Desconectados</Subheader>
-      {users.map(user => (DisconnectedUsers(user)
-      ))}
-    </List>
+      <AppBar title="Usuarios" id="leftNav"   />
+      <div style={{maxHeight: 'calc(90vh - 64px)',overflowX:'hidden',}}>
+        <SelectableList defaultValue={1}>
+          <Subheader>Usuarios</Subheader>
+          {users.map(user => (ConnectedUsers(user)
+          ))}
+        </SelectableList>
+        <Divider />
+        <List>
+          <Subheader>Desconectados</Subheader>
+          {users.map(user => (DisconnectedUsers(user)
+          ))}
+        </List>
+      </div>
     </CardMedia>
   </Card>
 );
