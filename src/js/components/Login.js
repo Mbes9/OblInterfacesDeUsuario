@@ -6,6 +6,16 @@ import AppBar from 'material-ui/AppBar';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import regeneratorRuntime  from 'regenerator-runtime'
+import {addUser} from '../actions/index'
+import { connect } from "react-redux";
+
+
+const mapDispatchToProps = dispatch => {
+  return {
+    addUser: user => dispatch(addUser(user))
+  };
+};
+
 class Login extends React.Component {
 constructor(props){
   super(props);
@@ -15,24 +25,69 @@ constructor(props){
     }
  }
 
-handleClick(event){
- 
-  this._createUser(this.state.username, this.state.image).catch((res) => {
-    const errors = res.graphQLErrors.map((error) => {
-      console.log(error.code);
-      console.log(error.message);
-    });
-  });
+ handleClick(event){
+  
+  const allUsers = this.props.allUsersQuery.allUsers || [];
+  var user = this.findArrayElementByName(allUsers, "Raul");
+  if(user !== undefined){
+    //Existe usuario
+    if(user.onlineStatus){
+      //Ya hay online, no permitir
 
+      // ALERTAR QUE YA HAY ONLINE
+    }else{
+      //GUARDAR ID EN REDUCER user.id
+      this._updateUser(user.id, this.state.image, true).then((res) => {
+      }).catch((res) => {
+        const errors = res.graphQLErrors.map((error) => {
+          console.log(error.code);
+          console.log(error.message);
+        });
+      });  
+    }
+  }
+  else{
+    //No existe usuario
+    this._createUser(this.state.username, this.state.image).then((res) => {
+    }).catch((res) => {
+      const errors = res.graphQLErrors.map((error) => {
+        console.log(error.code);
+        console.log(error.message);
+      });
+    });  
+
+  }
  }
 
- async _createUser(name, image){
+ async _createUser(username, imageurl){
    var result = await this.props.createUserMutation({
-    variables: { name, image }
+    variables: { username, imageurl }
   });
   console.log(result)
   console.log("id: " + result.data.createUser.id)
+  const { id } = result.data.createUser.id
+  const { name } = result.data.createUser.name
+  const { image } = result.data.createUser.image
+  const { onlineStatus } = result.data.createUser.onlineStatus
+  this.props.addUser({id, name, onlineStatus, image});
+  window.location = "/#/MainPage"
 };
+
+async _updateUser(id, image, onlineStatus){
+ var result = await this.props.updateUserMutation({ variables: { id, image, onlineStatus } });
+ window.location = "/#/MainPage"
+};
+
+async _logoutUser(id){
+ var result = await this.props.logoutUserMutation({ variables: { id } });
+};
+
+
+findArrayElementByName(array, name) {
+  return array.find((element) => {
+    return element.name === name;
+  })
+}
 
 render() {
     return (
@@ -65,19 +120,76 @@ render() {
 const style = {
  margin: 0,
 };
-
-
 const CREATE_USER_MUTATION = gql`
-  mutation CreateUserMutation($name: String!, $image: String) {
-    createUser(name: $name, image: $image, onlineStatus: true) {
+  mutation CreateUserMutation($username: String!, $imageurl: String) {
+    createUser(name: $username, image: $imageurl, onlineStatus: true) {
       id
       name
       image
       onlineStatus
+      createdAt
+      updatedAt
     }
   }
 `;
 
+const UPDATE_USER_MUTATION = gql`
+  mutation UpdateUserMutation($id: ID!, $image: String, $onlineStatus: Boolean) {
+    updateUser(id: $id, image: $image, onlineStatus: $onlineStatus) {
+      id
+      name
+      image
+      onlineStatus
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const LOGOUT_USER_MUTATION = gql`
+  mutation UpdateUserMutation($id: ID!) {
+    updateUser(id: $id, onlineStatus: false) {
+      id
+      name
+      image
+      onlineStatus
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const ALL_USERS_QUERY = gql`
+  query AllUsersQuery {
+    allUsers {
+      id
+      name
+      onlineStatus
+      image
+      createdAt
+      updatedAt
+    }
+  }
+`;
+
+const GET_USER_QUERY = gql`
+  query GetUserQuery($name: String) {
+    User(name: $name){
+      id
+      name
+      onlineStatus
+      image
+      createdAt
+      updatedAt
+    }
+  }
+`;
+const LoginConnected = connect(null, mapDispatchToProps)(Login)
+
 export default compose(
-  graphql(CREATE_USER_MUTATION, { name: 'createUserMutation' })
-) (Login);
+  graphql(CREATE_USER_MUTATION, { name: 'createUserMutation' }),
+  graphql(UPDATE_USER_MUTATION, { name: 'updateUserMutation' }),
+  graphql(LOGOUT_USER_MUTATION, { name: 'logoutUserMutation' }),
+  graphql(ALL_USERS_QUERY, { name: 'allUsersQuery' }),
+  graphql(GET_USER_QUERY, { name: 'getUserQuery' })
+) (LoginConnected);

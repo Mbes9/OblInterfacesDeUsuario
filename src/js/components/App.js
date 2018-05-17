@@ -1,16 +1,18 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
+import { Switch, Route } from 'react-router-dom'
+import { PropsRoute  } from 'react-router-with-props'
 import './App.css';
 import lightBaseTheme from 'material-ui/styles/baseThemes/lightBaseTheme';
 import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
 import getMuiTheme from 'material-ui/styles/getMuiTheme';
 import IconButton from 'material-ui/IconButton';
-import UsersList from './Users'
-import Chat from './Chat'
 import {Card, CardActions, CardHeader, CardMedia, CardTitle, CardText} from 'material-ui/Card';
 import Login from './Login';
+import MainPage from './MainPage'
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
+
 
 class App extends React.Component{
 
@@ -51,15 +53,22 @@ class App extends React.Component{
     
     return(
       <MuiThemeProvider muiTheme={getMuiTheme(lightBaseTheme)}>
-      <Card style={{display:'table',height:'90vh', width:'80vw', marginLeft:'10%', marginRight:'10%', marginTop:'2%'}}>
+      <Card style={{height:'90vh', width:'80vw', marginLeft:'10%', marginRight:'10%', marginTop:'2%'}}>
          <CardMedia>
-          {/* <UsersList users={allUsers}/>
-          <Chat/> */}
-          <Login/>
+            <Switch>
+              <PropsRoute path='/login' component={Login}/>
+              <PropsRoute path='/mainPage' component={MainPage} users={allUsers}/>
+            </Switch>
          </CardMedia>
        </Card>
      
        </MuiThemeProvider>
+    );
+  }
+
+  MainPageView(users){
+    return(
+        <MainPage users = {users} />
     );
   }
 

@@ -9,6 +9,7 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import NoPhoto from '../../images/NoPhotoBig.png'
+import uuidv1 from "uuid";
  
 let SelectableList = makeSelectable(List);
 
@@ -71,8 +72,7 @@ const UsersList = ({users}) => (
 
 function ConnectedUsers(user){
   return(
-    <div>
-      { user.onlineStatus &&
+       user.onlineStatus &&
         <ListItem 
         key={user.id}
         value={user.id}
@@ -80,22 +80,17 @@ function ConnectedUsers(user){
         leftAvatar={<Avatar src={user.image ? user.image : NoPhoto} />}
         rightIcon={<CommunicationChatBubble />}
       />
-      }
-    </div>
   )
 }
 
 function DisconnectedUsers(user){
   return(
-    <div>
-      { !user.onlineStatus &&
+       !user.onlineStatus &&
         <ListItem 
         key={user.id}
         primaryText={user.name}
         leftAvatar={<Avatar src={user.image ? user.image : NoPhoto} />}
       />
-      }
-    </div>
   )
 }
  
