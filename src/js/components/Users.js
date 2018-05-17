@@ -9,7 +9,10 @@ import Subheader from 'material-ui/Subheader';
 import Divider from 'material-ui/Divider';
 import CommunicationChatBubble from 'material-ui/svg-icons/communication/chat-bubble';
 import NoPhoto from '../../images/NoPhotoBig.png'
-import uuidv1 from "uuid";
+import NoPhotoWhite from '../../images/NoPhotoWhite.png'
+import FlatButton from 'material-ui/FlatButton';
+import { connect } from 'react-redux';
+import { transparent } from 'material-ui/styles/colors';
  
 let SelectableList = makeSelectable(List);
 
@@ -47,12 +50,25 @@ function wrapState(ComposedComponent) {
   };
 }
 
+function handleLogout(){
+  window.location = "#/Login"
+}
+
 SelectableList = wrapState(SelectableList);
 
-const UsersList = ({users}) => (
+const mapStateToProps = state =>{
+  if( state.users == undefined ||state.users[state.users.length-1] == undefined || state.users.length == 0){
+    window.location = "#/Login";
+    return{};
+  }
+  console.log(state);
+  return { loggedUser: state.users[state.users.length-1]}
+}
+
+const UsersList = ({users, loggedUser}) => (
     <Card id="UsersCard" style={{ width:'320px', minWidth:'320px !important', float:'left'}}>
     <CardMedia>
-      <AppBar title="Usuarios" id="leftNav"   />
+      <AppBar title={loggedUser ? loggedUser.name : ""} id="leftNav" iconElementRight={<FlatButton label="Salir" onClick={() => handleLogout()} />} iconElementLeft={<Avatar style={{backgroundColor:transparent}} src={loggedUser && loggedUser.image ? loggedUser.image : NoPhotoWhite}/>}/>
       <div style={{maxHeight: 'calc(90vh - 64px)',overflowX:'hidden',}}>
         <SelectableList defaultValue={1}>
           <Subheader>Usuarios</Subheader>
@@ -77,7 +93,7 @@ function ConnectedUsers(user){
         key={user.id}
         value={user.id}
         primaryText={user.name}
-        leftAvatar={<Avatar src={user.image ? user.image : NoPhoto} />}
+        leftAvatar={<Avatar style={{backgroundColor:transparent}} src={user.image ? user.image : NoPhoto} />}
         rightIcon={<CommunicationChatBubble />}
       />
   )
@@ -89,9 +105,11 @@ function DisconnectedUsers(user){
         <ListItem 
         key={user.id}
         primaryText={user.name}
-        leftAvatar={<Avatar src={user.image ? user.image : NoPhoto} />}
+        leftAvatar={<Avatar style={{backgroundColor:transparent}} src={user.image ? user.image : NoPhoto} />}
       />
   )
 }
  
-export default UsersList;
+const ConnectedUsersList = connect(mapStateToProps)(UsersList)
+
+export default ConnectedUsersList;

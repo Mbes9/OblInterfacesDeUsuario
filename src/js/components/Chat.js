@@ -19,6 +19,7 @@ import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
 import IconMenu from 'material-ui/IconMenu';
 import MenuItem from 'material-ui/MenuItem';
 import { connect } from "react-redux"; 
+import { transparent } from 'material-ui/styles/colors';
 
 const writingSpan ={
   marginTop: 9,
@@ -43,7 +44,7 @@ class ConnectedChat extends React.Component {
              <List style={{maxHeight: 'calc(82vh - 64px)',overflowX:'hidden'}}>
                 <Subheader>Hoy</Subheader>
                 <ListItem
-                  leftAvatar={<Avatar src={UserFace} />}
+                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
                   primaryText={
                     <p>
                       <span style={{color: darkBlack}}>Cambiamos</span> --
@@ -53,7 +54,7 @@ class ConnectedChat extends React.Component {
                 />
                 <Divider inset={true} />
                 <ListItem
-                  leftAvatar={<Avatar src={UserFace} />}
+                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
                   primaryText={
                     <p>
                       <span style={{color: darkBlack}}>Cambiamos</span> --
@@ -63,12 +64,12 @@ class ConnectedChat extends React.Component {
                 />
                 <Divider inset={true} />
                 <ListItem
-                  leftAvatar={<Avatar src={UserFace} />}
+                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
                   primaryText="Oui oui"
                 />
                 <Divider inset={true} />
                 <ListItem
-                  leftAvatar={<Avatar src={UserFace} />}
+                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
                   primaryText={
                     <p>
                       <span style={{color: darkBlack}}>Cambiamos</span> --
@@ -79,7 +80,7 @@ class ConnectedChat extends React.Component {
                 />
                 <Divider inset={true} />
                 <ListItem
-                  leftAvatar={<Avatar src={UserFace} />}
+                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
                   primaryText={
                     <p style={{'lineHeight':23}}>
                       <span style={{color: darkBlack}}>Cambiamos</span> --

@@ -16,6 +16,15 @@ const mapDispatchToProps = dispatch => {
   };
 };
 
+
+const mapStateToProps = state =>{
+  if(state.users == undefined ||state.users[state.users.length-1] == undefined || state.users.length == 0){
+    return{};
+  }
+  this._logoutUser(state[state.users.length-1].id)
+  return { currrentUser: state.users[state.users.length-1]}
+}
+
 class Login extends React.Component {
 constructor(props){
   super(props);
@@ -23,6 +32,9 @@ constructor(props){
     username:'',
     image:''
     }
+    console.log(props)
+    if(props.currrentUser != undefined)
+      this._logoutUser(props.currrentUser.id);
  }
 
  handleClick(event){
@@ -33,7 +45,7 @@ constructor(props){
     //Existe usuario
     if(user.onlineStatus){
       //Ya hay online, no permitir
-
+      alert("Logeado")
       // ALERTAR QUE YA HAY ONLINE
     }else{
       //GUARDAR ID EN REDUCER user.id
@@ -50,6 +62,7 @@ constructor(props){
     //No existe usuario
     this._createUser(this.state.username, this.state.image).then((res) => {
     }).catch((res) => {
+      console.log(res)
       const errors = res.graphQLErrors.map((error) => {
         console.log(error.code);
         console.log(error.message);
@@ -63,18 +76,24 @@ constructor(props){
    var result = await this.props.createUserMutation({
     variables: { username, imageurl }
   });
-  console.log(result)
-  console.log("id: " + result.data.createUser.id)
-  const { id } = result.data.createUser.id
-  const { name } = result.data.createUser.name
-  const { image } = result.data.createUser.image
-  const { onlineStatus } = result.data.createUser.onlineStatus
+  // console.log(result)
+  // console.log("id: " + result.data.createUser.id)
+  const id  = result.data.createUser.id
+  const name  = result.data.createUser.name
+  const image = result.data.createUser.image
+  const onlineStatus = result.data.createUser.onlineStatus
   this.props.addUser({id, name, onlineStatus, image});
   window.location = "/#/MainPage"
 };
 
 async _updateUser(id, image, onlineStatus){
  var result = await this.props.updateUserMutation({ variables: { id, image, onlineStatus } });
+ console.log(result)
+ const idResult  = result.data.updateUser.id
+  const nameResult  = result.data.updateUser.name
+  const imageResult = result.data.updateUser.image
+  const onlineStatusResult = result.data.updateUser.onlineStatus
+  this.props.addUser({id: idResult,name: nameResult,onlineStatus: onlineStatusResult,image: imageResult});
  window.location = "/#/MainPage"
 };
 
@@ -184,7 +203,9 @@ const GET_USER_QUERY = gql`
     }
   }
 `;
-const LoginConnected = connect(null, mapDispatchToProps)(Login)
+const LoginConnected = connect( (state) => ({
+  currrentUser: state.users && state.users.length != 0 ? state.users[0] : undefined,
+}), mapDispatchToProps,)(Login)
 
 export default compose(
   graphql(CREATE_USER_MUTATION, { name: 'createUserMutation' }),

@@ -18,6 +18,7 @@ class App extends React.Component{
 
   componentDidMount(){
     this._subscribeToNewUsers();
+    this._subscribeToUpdatedUsers();
   }
 
   _subscribeToNewUsers(){
@@ -30,21 +31,49 @@ class App extends React.Component{
               name
               onlineStatus
               image
+              createdAt
+              updatedAt
             }
           }
         }
       `,
       updateQuery: (previous, { subscriptionData }) => {
-        const newUserLinks = [
-          ...previous.allUsers,
-          subscriptionData.data.User.node
-        ];
-        const result = {
-          ...previous,
-          allUsers: newUserLinks
-        };
-        return result;
+
+          console.log("nuevo usuario")
+          const newUserLinks = [
+            ...previous.allUsers,
+            subscriptionData.data.User.node
+          ];
+          const result = {
+            ...previous,
+            allUsers: newUserLinks
+          };
+          return result;
+
       }
+    });
+  };
+
+
+  _subscribeToUpdatedUsers(){
+    this.props.allUsersQuery.subscribeToMore({
+      document: gql`
+        subscription {
+          User(filter: { mutation_in: [UPDATED] }) {
+            node {
+              id
+              name
+              onlineStatus
+              image
+              createdAt
+              updatedAt
+            }
+          }
+        }
+      `,
+      updateQuery: (previous, { subscriptionData }) => {
+      
+    }
     });
   };
 
