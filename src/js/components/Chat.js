@@ -23,6 +23,7 @@ import { transparent } from 'material-ui/styles/colors';
 import { graphql, compose } from 'react-apollo';
 import gql from 'graphql-tag';
 import regeneratorRuntime  from 'regenerator-runtime'
+import { SMALL } from 'material-ui/utils/withWidth';
 
 const writingSpan ={
   marginTop: 9,
@@ -35,6 +36,11 @@ const writingSpan ={
 
  
 class ConnectedChat extends React.Component {
+
+  componentDidMount(){
+    this._subscribeToNewMessages();
+  }
+
   _subscribeToNewMessages(){
     this.props.allMessagesQuery.subscribeToMore({
       document: gql`
@@ -70,86 +76,98 @@ class ConnectedChat extends React.Component {
     var result = await this.props.createMessageMutation({
      variables: { messageFrom, messageTo, text }
    });
+   this.refs.textInput.input.value = "";
   };
 
-  showAux(){
-    console.log(this.props.loggedUser)
+  closeChat(){
+    var eles = document.getElementsByClassName("ChatClass-Active");
+      Array.prototype.forEach.call(eles, function(el){
+        el.classList.remove("ChatClass-Active");
+        el.classList.add("ChatClass");
+      
+      });
+    var inputEles = document.getElementsByClassName("ChatClass-Active-Input");
+    Array.prototype.forEach.call(inputEles, function(ele){
+      ele.classList.remove("ChatClass-Active-Input");
+      ele.classList.add("ChatClass-Input");
+      
+      });
+
+  }
+
+  closeChatRender(){
+    this.closeChat();
+    this.closeChat();
   }
 
   render(){
-    var createUser = this.props.loggedUser;
-    console.log(createUser)
-    if(document.getElementById("ChatWithId"))
-      console.log(document.getElementById("ChatWithId").innerText)
+    var sender = this.props.loggedUser.name;
+    let reciever = "";
+    if(document.getElementById("ChatWithId")){
+      reciever = document.getElementById("ChatWithId").innerText;
+    }
+
+    function ShowMessages(message){
+      var id = message.id.toString();
+      var origin = message.messageFrom.toString();
+      var destination = message.messageTo.toString();
+      var text = message.text.toString();
+      var date = message.createdAt.toString().substring(0, 10);
+      var allign= "";
+      if(sender == origin)
+        allign == "left"
+      if(sender == destination)
+        allign == "right"
+      return(
+          (sender == origin && reciever == destination || sender == destination && reciever == origin) &&
+          <ListItem 
+            key={id}
+            primaryText={
+              <p style={{textAlign: {allign}}}>
+                <span style={{color: darkBlack}}>{origin}</span> - <span style={{fontSize: 12}}>{date}</span>
+              </p>
+            }
+            secondaryText={
+              <p>
+                {text}
+              </p>
+            }
+          />
+      )
+    }
+
     const allMessages = this.props.allMessagesQuery.allMessages || [];
+
+
      return(
-       <div className="ChatClass" id="ChatId">
-       <input hidden={true} id="ChatWithId" value=""/>
-            <Card id="ChatCard" className="ChatClass" style={{height:'82vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right'}}>
+      <div>
+      <input hidden={true} id="ChatWithId" value=""/>
+           <Card  className="ChatClass" style={{height:'82vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right'}}>
               <CardMedia>
-        <AppBar title="Nombre del usuario..." iconElementRight={<span style={writingSpan}>Escribiendo...</span>}  id="rightNav" iconElementLeft={<div><MediaQuery query="(max-width:780px)"> <IconButton><NavigationClose /></IconButton></MediaQuery>
+              <AppBar title={reciever} style={{zIndex:9999}} iconElementRight={<span style={writingSpan}></span>}  id="rightNav" onLeftIconButtonClick={() => this.closeChatRender()} iconElementLeft={<div><MediaQuery query="(max-width:780px)"> <IconButton><NavigationClose /></IconButton></MediaQuery>
             <IconButton><MoreVertIcon /></IconButton></div>
             } />
-             <List style={{maxHeight: 'calc(82vh - 64px)',overflowX:'hidden'}}>
-                <Subheader>Hoy</Subheader>
-                <ListItem
-                  onClick ={() => this.showAux()}
-                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
-                  primaryText={
-                    <p>
-                      <span style={{color: darkBlack}}>Cambiamos</span> --
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                    </p>
-                  }
-                />
-                <Divider inset={true} />
-                <ListItem
-                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
-                  primaryText={
-                    <p>
-                      <span style={{color: darkBlack}}>Cambiamos</span> --
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                    </p>
-                  }
-                />
-                <Divider inset={true} />
-                <ListItem
-                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
-                  primaryText="Oui oui"
-                />
-                <Divider inset={true} />
-                <ListItem
-                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
-                  primaryText={
-                    <p>
-                      <span style={{color: darkBlack}}>Cambiamos</span> --
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                    </p>
-                  }                
-
-                />
-                <Divider inset={true} />
-                <ListItem
-                  leftAvatar={<Avatar style={{backgroundColor:transparent}} src={UserFace} />}
-                  primaryText={
-                    <p style={{'lineHeight':23}}>
-                      <span style={{color: darkBlack}}>Cambiamos</span> --
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                      Un texto algo largo para que sea algo de testeo de un elemento y chat largo.
-                    </p>
-                  }
-                />
+              <List style={{maxHeight: 'calc(82vh - 64px)',overflowX:'hidden'}}>
+                {allMessages.map(message => (ShowMessages(message)))}
               </List>
+
+            
 
               </CardMedia>
             </Card>
-            <Card id="MessageCard" style={{height:'8vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right', paddingLeft:'3vw'}}>
-                  <CardMedia>
+            <Card className="ChatClass ChatClass-Input" id="MessageCard" style={{height:'8vh', width:'calc(100% - 320px)', minWidth:'unset !important', float:'right', paddingLeft:'3vw'}}>
+            <CardMedia>
                     <TextField 
-                      hintText="Escribe un mensaje aquí"
+                        ref="textInput"
+                        hintText="Escribe un mensaje aquí"
                         fullWidth={true}
+                        onKeyPress={ (e) => {
+                          if (e.key === 'Enter') {
+                            if(document.getElementById("ChatWithId").innerText == "1" || this.refs.textInput.input.value.trim() == ""){
+
+                            }else{
+                              this._createMessage(sender, document.getElementById("ChatWithId").innerText, this.refs.textInput.input.value);
+                        }}}}
                     />
                   </CardMedia>
                 </Card>
@@ -173,7 +191,7 @@ const ALL_MESSAGES_QUERY = gql`
 
 const CREATE_MESSAGE_MUTATION = gql`
   mutation CreateMessageMutation($messageFrom: String!, $messageTo: String!, $text: String!) {
-    createUser(messageFrom: $messageFrom, messageTo: $messageTo, text: text) {
+    createMessage(messageFrom: $messageFrom, messageTo: $messageTo, text: $text) {
       id
       text
       messageFrom

@@ -38,14 +38,18 @@ constructor(props){
  }
 
  handleClick(event){
-  
+
+  if(this.state.username == undefined || this.state.username == ''){
+    alert("Username vacío.")
+    return;
+  }
   const allUsers = this.props.allUsersQuery.allUsers || [];
   var user = this.findArrayElementByName(allUsers, this.state.username);
   if(user !== undefined){
     //Existe usuario
     if(user.onlineStatus){
       //Ya hay online, no permitir
-      alert("Logeado")
+      alert("Ya esta logeado.")
       // ALERTAR QUE YA HAY ONLINE
     }else{
       //GUARDAR ID EN REDUCER user.id
@@ -119,6 +123,10 @@ render() {
                     hintText="Escriba su nombre de usuario"
                     floatingLabelText="Nombre"
                     onChange = {(event,newValue) => this.setState({username:newValue})}
+                    onKeyPress={ (e) => {
+                      if (e.key === 'Enter') {
+                        this.handleClick(event)
+                    }}}
                     />
                     <br/>
                     <TextField

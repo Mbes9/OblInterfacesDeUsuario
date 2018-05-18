@@ -32,24 +32,36 @@ function wrapState(ComposedComponent) {
       });
     }
 
-    handleRequestChange(event,index) {
-      var eles = document.getElementsByClassName("ChatClass")
-      Array.prototype.forEach.call(eles, function(el){
-        console.log(el.classList)
-        el.classList.remove("ChatClass");
-        el.classList.add("ChatClass-Active");
-        console.log(el.classList)
-      
-      })
+    handleRequestChangeRender(index){
       this.setState({
         selectedIndex: index,
       });
-      console.log("importante")
-      console.log(this.props) // usuario a chatear
-      if(this.props.loggedUser)
-        this.props.loggedUser.chatWith = this.state.selectedIndex
+    }
 
+    handleRequestChange(event,index) {
+      this.handleRequestChangeRender(index);
+      this.handleRequestChangeRender(index);
+      this.openChatRender();
     };
+    
+  openChat(){
+    var eles = document.getElementsByClassName("ChatClass")
+    Array.prototype.forEach.call(eles, function(el){
+      el.classList.remove("ChatClass");
+      el.classList.add("ChatClass-Active");
+    })
+    var inputEles = document.getElementsByClassName("ChatClass-Input")
+    Array.prototype.forEach.call(inputEles, function(el){
+      el.classList.remove("ChatClass-Input");
+      el.classList.add("ChatClass-Active-Input");
+
+    })
+  }
+
+  openChatRender(){
+    this.openChat()
+    this.openChat()
+  }
 
     render() {
       console.log(this.state.selectedIndex) // usuario a chatear
@@ -79,13 +91,15 @@ const mapStateToProps = state =>{
     return{};
   }
   console.log(state);
+  console.log("Importante");
+  console.log(state.users[state.users.length-1])
   return { loggedUser: state.users[state.users.length-1]}
 }
 
 const UsersList = ({users, loggedUser}) => (
     <Card id="UsersCard" style={{ width:'320px', minWidth:'320px !important', float:'left'}}>
     <CardMedia>
-      <AppBar title={loggedUser ? loggedUser.name : ""} id="leftNav" iconElementRight={<FlatButton label="Salir" onClick={() => handleLogout()} />} iconElementLeft={<Avatar style={{backgroundColor:transparent}} src={loggedUser && loggedUser.image ? loggedUser.image : NoPhotoWhite}/>}/>
+      <AppBar style={{zIndex:1}} title={loggedUser ? loggedUser.name : ""} id="leftNav" iconElementRight={<FlatButton label="Salir" onClick={() => handleLogout()} />} iconElementLeft={<Avatar style={{backgroundColor:transparent}} src={loggedUser && loggedUser.image ? loggedUser.image : NoPhotoWhite}/>}/>
       <div style={{maxHeight: 'calc(90vh - 64px)',overflowX:'hidden',}}>
         <SelectableList defaultValue={1}>
           <Subheader>Usuarios</Subheader>
@@ -128,6 +142,6 @@ function DisconnectedUsers(user){
 }
 
 
-const ConnectedUsersList = connect(mapStateToProps)(SelectableList)
+const ConnectedUsersList = connect(mapStateToProps)(UsersList)
 
-export default UsersList;
+export default ConnectedUsersList;
